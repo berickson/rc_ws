@@ -60,11 +60,12 @@ def generate_launch_description():
                     package='stereo_image_proc',
                     plugin='stereo_image_proc::DisparityNode',
                     name='disparity_node',
+                    namespace='alpcam_camera',
                     remappings=[
-                        ('left/image_rect', '/alpcam_camera/left/image_rect'),
-                        ('left/camera_info', '/alpcam_camera/left/camera_info'),
-                        ('right/image_rect', '/alpcam_camera/right/image_rect'),
-                        ('right/camera_info', '/alpcam_camera/right/camera_info'),
+                        ('left/image_rect', 'left/image_rect'),
+                        ('left/camera_info', 'left/camera_info'),
+                        ('right/image_rect', 'right/image_rect'),
+                        ('right/camera_info', 'right/camera_info'),
                     ],
                 ),
                 ComposableNode(
@@ -83,6 +84,18 @@ def generate_launch_description():
                     namespace='alpcam_camera/right',
                     remappings=[
                         ('image', 'image_raw'),
+                    ],
+                ),
+
+                ComposableNode(
+                    package='stereo_image_proc',
+                    plugin='stereo_image_proc::PointCloudNode',
+                    name='point_cloud_node',
+                    namespace='alpcam_camera',
+                    remappings=[
+                        ('left/image_rect_color', 'left/image_rect'),
+                        ('left/camera_info', 'left/camera_info'),
+                        ('right/camera_info', 'right/camera_info'),
                     ],
                 ),
             ],

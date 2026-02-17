@@ -9,7 +9,7 @@ import yaml
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
-from sensor_msgs.msg import Image, CameraInfo
+from sensor_msgs.msg import CompressedImage, Image, CameraInfo
 from cv_bridge import CvBridge
 
 from alpcam.device import find_camera_device
@@ -100,6 +100,10 @@ class AlpCameraNode(Node):
         )
         self.pub_left_img = self.create_publisher(Image, "~/left/image_raw", qos)
         self.pub_right_img = self.create_publisher(Image, "~/right/image_raw", qos)
+        self.pub_left_compressed = self.create_publisher(
+            CompressedImage, "~/left/image_raw/compressed", qos)
+        self.pub_right_compressed = self.create_publisher(
+            CompressedImage, "~/right/image_raw/compressed", qos)
         self.pub_left_info = self.create_publisher(CameraInfo, "~/left/camera_info", qos)
         self.pub_right_info = self.create_publisher(CameraInfo, "~/right/camera_info", qos)
 
@@ -244,6 +248,20 @@ class AlpCameraNode(Node):
 
         self.pub_left_img.publish(left_msg)
         self.pub_right_img.publish(right_msg)
+
+        # Publish JPEG-compressed variants.
+        for eye_img, pub in (
+            (left_img, self.pub_left_compressed),
+            (right_img, self.pub_right_compressed),
+        ):
+            _, buf = cv2.imencode('.jpg', eye_img, [cv2.IMWRITE_JPEG_QUALITY, 80])
+            cmsg = CompressedImage()
+            cmsg.header.stamp = stamp
+            cmsg.header.frame_id = self.frame_id
+            cmsg.format = 'jpeg'
+            cmsg.data = buf.tobytes()
+            pub.publish(cmsg)
+
         self.pub_left_info.publish(self.left_camera_info)
         self.pub_right_info.publish(self.right_camera_info)
 
