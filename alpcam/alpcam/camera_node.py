@@ -87,21 +87,21 @@ class AlpCameraNode(Node):
         self.right_info_url = self.get_parameter("right_camera_info_url").value
         self.rotate_180 = self.get_parameter("rotate_180").value
 
-        # ── Publishers (QoS: latest-only, low latency) ───────────
-        img_qos = QoSProfile(
+        # ── Publishers ──────────────────────────────────────────────
+        qos = QoSProfile(
             history=QoSHistoryPolicy.KEEP_LAST,
             depth=1,
-            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            reliability=QoSReliabilityPolicy.RELIABLE,
         )
         info_qos = QoSProfile(
             history=QoSHistoryPolicy.KEEP_LAST,
             depth=1,
             reliability=QoSReliabilityPolicy.RELIABLE,
         )
-        self.pub_left_img = self.create_publisher(Image, "~/left/image_raw", img_qos)
-        self.pub_right_img = self.create_publisher(Image, "~/right/image_raw", img_qos)
-        self.pub_left_info = self.create_publisher(CameraInfo, "~/left/camera_info", info_qos)
-        self.pub_right_info = self.create_publisher(CameraInfo, "~/right/camera_info", info_qos)
+        self.pub_left_img = self.create_publisher(Image, "~/left/image_raw", qos)
+        self.pub_right_img = self.create_publisher(Image, "~/right/image_raw", qos)
+        self.pub_left_info = self.create_publisher(CameraInfo, "~/left/camera_info", qos)
+        self.pub_right_info = self.create_publisher(CameraInfo, "~/right/camera_info", qos)
 
         self.bridge = CvBridge()
         self.cap = None
