@@ -1,0 +1,9 @@
+alpcam_camera:
+  ros__parameters:
+    device: ""
+    resolution: "1280x480"
+    frame_rate: 30
+    frame_id: "alpcam_link"
+    left_camera_info_url: ""
+    right_camera_info_url: ""
+    rotate_180: true

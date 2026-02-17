@@ -1,0 +1,17 @@
+# Build and install directories (colcon)
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
